@@ -6,15 +6,6 @@ import edu.princeton.cs.introcs.StdDraw;
 public class Game {
 
 	public static void main(String[] args) {
-		start();
-		update();
-	
-		
-
-
-
-
-
 		double lowerVelocity = 0.005;
 		double upperVelocity = 0.01;
 		int ballCount = 3;
@@ -45,7 +36,6 @@ public class Game {
 		
 		// Game loop MASSIVE
 		while (true) {
-			
 			StdDraw.clear();
 			boolean collision = false;
 			for(int i = 0; i < ballCount; i++) {
@@ -93,8 +83,6 @@ public class Game {
 					playerX = 0.5;
 					playerY = 0.5;
 				}
-				
-				
 			}
 			
 			// Handle player movement
@@ -176,17 +164,36 @@ public class Game {
 		}
 	}
 
-	public static void start(){
 
+//I do not have time to refactor the code and I left it above so I know but these are
+//the methods I would have created to avoid everything being in main
+//A fourth class could be score as that is sometimes separate as well but 
+//obviously I barely was able to do anything. I also don't know if draw 
+//should be in the enemy/player class or in the game class for each object
+
+// the main method would look something like
+//public static void main(String[] args) {
+//      start();
+//	  	while(true) {
+//			update();
+//		}
+// 		restartGame();
+
+	public static void start(){
+		Player player = new Player(0.5, 0.5, 0.01);
+		Enemy enemy = new Enemy(0.5, 0.5, 0.01, 0.01);
+		for (int i = 0; i < ballCount; i++) {
+			enemy.spawnEnemy();
+		}
 	}
 
 	public static void update(){
 		checkCollision(player, enemy);
+		updateScore();
 		draw();
 	}
 
-
-	public static void checkCollision(Player player, Enemy enemy){
+	public static void checkWallCollision(Player player, Enemy enemy){
 		if(player.playerX > 1) {
 			player.playerX = 1;
 		}
@@ -199,6 +206,31 @@ public class Game {
 		if(player.playerY < 0) {
 			player.playerY = 0;
 		}
+	}
+
+	public static boolean checkEnemyCollision(Player player, Enemy enemy){
+		//issue with private need getter 
+		double d = Math.sqrt(Math.pow(enemy.x - player.playerX, 2) + Math.pow(enemy.y - player.playerY, 2));
+		if(d < 2 * radius) {
+			return true;
+		}
+		return false;
+	}
+
+	public static void restartGame(){
+		enemy.resetEnemyPosition();
+		player.resetPlayerPosition();
+	}
+
+	public static void updateScore(){
+		long now = System.currentTimeMillis();
+			if(now > st + 1000) {
+				score++;
+				if(score > highScore) {
+					highScore = score;
+				}
+				st = now;
+			}
 	}
 
 	public static void draw(){

@@ -23,4 +23,10 @@ public class Player {
             playerY = playerY + playerSpeed;
         }
     }
+
+    public void resetPlayerPosition() {
+        playerX = 0.5;
+        playerY = 0.5;
+    }
+
 }
